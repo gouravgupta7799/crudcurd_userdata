@@ -64,3 +64,24 @@ list.addEventListener('click', e => {
     list.removeChild(li);
   }
 })
+
+list.addEventListener('click',e => {
+  if (e.target.classList.contains('Edit')) {
+    let li = e.target.parentElement;
+    let text = li.innerHTML;
+    let item = text.split(" -");
+    axios.get(url + '/userdata')
+      .then(res => {
+        for (let i = 0; i < res.data.length; i++) {
+          if (res.data[i].name === item[0]) {
+            document.getElementById('NameInput').value = res.data[i].name;
+            document.getElementById('EmailInput').value = res.data[i].email;
+            document.getElementById('contactInput').value = res.data[i].number;
+            axios.delete(url + '/userdata/' + res.data[i]._id);
+
+          }
+        }
+      })
+    list.removeChild(li);
+  }
+})
