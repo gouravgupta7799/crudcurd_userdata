@@ -1,4 +1,4 @@
-let url = "https://crudcrud.com/api/000620fb92734c63b0deaeac9cbcbf92";
+let url = "https://crudcrud.com/api/4f54af16408747ef9309816683f0ef8b";
 
 let list = document.getElementById('items');
 
@@ -6,11 +6,15 @@ showData();
 
 function createListItem(name, email, number) {
   let li = document.createElement('li');
-  let deletebtn = document.createElement('Button');
-  let Editbtn = document.createElement('Button');
+  let deletebtn = document.createElement('button');
+  deletebtn.innerHTML = 'Delete';
+  deletebtn.className = 'danger-btn Delete';
+  let Editbtn = document.createElement('button');
+  Editbtn.innerHTML = "Edit";
+  Editbtn.className = "primary-btn Edit"
+  li.innerHTML = `${name} - ${email} - ${number}`;
   li.appendChild(deletebtn);
   li.appendChild(Editbtn);
-  li.innerHTML = `${name} - ${email} - ${number}`
   return li;
 }
 
@@ -43,3 +47,20 @@ btn.addEventListener('click', (e) => {
     })
     .catch((error) => console.log(error));
 });
+
+list.addEventListener('click', e => {
+  if (e.target.classList.contains('Delete')) {
+    let li = e.target.parentElement;
+    let text = li.innerHTML;
+    let item = text.split(" -");
+    axios.get(url + '/userdata')
+      .then(res => {
+        for (let i = 0; i < res.data.length; i++) {
+          if (res.data[i].name === item[0]) {
+            axios.delete(url + '/userdata/' + res.data[i]._id)
+          }
+        }
+      })
+    list.removeChild(li);
+  }
+})
